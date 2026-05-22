@@ -9,6 +9,8 @@ import { Reveal, SectionLabel } from "@/components/animations/reveal";
 import { SITE } from "@/data/site";
 import { cn } from "@/lib/utils";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
@@ -37,7 +39,7 @@ function ContactPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await fetch('http://localhost:8001/api/contact', {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

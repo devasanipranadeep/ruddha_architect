@@ -4,6 +4,8 @@ import { Mail, Phone, User, Clock, Check, X, Archive, Trash2, Reply } from "luci
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+
 export const Route = createFileRoute("/admin/messages")({
   head: () => ({
     meta: [
@@ -36,7 +38,7 @@ function MessagesPage() {
 
   const loadMessages = async () => {
     try {
-      const data = await fetch("http://localhost:8001/api/contact", {
+      const data = await fetch(`${API_BASE_URL}/contact`, {
         headers: {
           Authorization: `Bearer ${api.getToken()}`,
         },
@@ -51,7 +53,7 @@ function MessagesPage() {
 
   const updateMessageStatus = async (messageId: string, status: string) => {
     try {
-      await fetch(`http://localhost:8001/api/contact/${messageId}`, {
+      await fetch(`${API_BASE_URL}/contact/${messageId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +72,7 @@ function MessagesPage() {
     if (!confirm("Are you sure you want to delete this message?")) return;
     
     try {
-      await fetch(`http://localhost:8001/api/contact/${messageId}`, {
+      await fetch(`${API_BASE_URL}/contact/${messageId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${api.getToken()}`,
