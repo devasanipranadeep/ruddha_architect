@@ -7,7 +7,7 @@
   "env": {
     "VITE_API_URL": {
       "description": "Backend API URL",
-      "value": "https://your-backend-url.onrender.com/api",
+      "value": "https://ruddha-architect-api.onrender.com/api",
       "type": "plain"
     }
   }
