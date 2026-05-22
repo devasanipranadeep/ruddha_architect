@@ -1,44 +1,66 @@
-import { createFileRoute, useNavigate, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Save, Upload } from "lucide-react";
 import { api, type Project } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/projects/edit/$id")({
-  loader: async ({ params }) => {
-    try {
-      const project = await api.getProject(params.id);
-      if (!project) throw notFound();
-      return { project };
-    } catch (error) {
-      throw notFound();
-    }
-  },
   component: EditProjectPage,
 });
 
 function EditProjectPage() {
   const navigate = useNavigate();
-  const { project: initialProject } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    slug: initialProject.slug,
-    title: initialProject.title,
-    category: initialProject.category,
-    location: initialProject.location,
-    year: String(initialProject.year),
-    image: initialProject.cover_image || "",
+    slug: "",
+    title: "",
+    category: "Architecture",
+    location: "",
+    year: "",
+    image: "",
     tall: false,
-    description: initialProject.description || "",
-    area: initialProject.area || "",
-    client_name: initialProject.client_name || "",
-    budget: initialProject.budget || "",
-    featured: initialProject.featured || false,
-    status: initialProject.status || "draft",
+    description: "",
+    area: "",
+    client_name: "",
+    budget: "",
+    featured: false,
+    status: "draft",
   });
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const categories = ["Architecture", "Interior Design", "Landscape", "Renovation", "Turnkey Build", "Consulting"];
+
+  useEffect(() => {
+    const loadProject = async () => {
+      try {
+        const data = await api.getProject(id);
+        setProject(data);
+        setFormData({
+          slug: data.slug,
+          title: data.title,
+          category: data.category,
+          location: data.location,
+          year: String(data.year),
+          image: data.cover_image || "",
+          tall: false,
+          description: data.description || "",
+          area: data.area || "",
+          client_name: data.client_name || "",
+          budget: data.budget || "",
+          featured: data.featured || false,
+          status: data.status || "draft",
+        });
+      } catch (error) {
+        console.error("Failed to load project:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProject();
+  }, [id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -76,7 +98,7 @@ function EditProjectPage() {
   };
 
   const handleTitleBlur = () => {
-    if (formData.slug === initialProject.slug && formData.title) {
+    if (project && formData.slug === project.slug && formData.title) {
       setFormData((prev) => ({ ...prev, slug: generateSlug(prev.title) }));
     }
   };
@@ -108,7 +130,7 @@ function EditProjectPage() {
         coverImageUrl = uploadResponse.url;
       }
 
-      await api.updateProject(initialProject.id, {
+      await api.updateProject(id, {
         title: formData.title,
         slug: formData.slug,
         category: formData.category,
@@ -130,6 +152,19 @@ function EditProjectPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) {
+    return <div className="text-center py-12 text-foreground/60">Loading project...</div>;
+  }
+
+  if (!project) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-foreground/60">Project not found.</p>
+        <button onClick={() => navigate({ to: "/admin/projects" })} className="mt-4 text-gold hover:underline">Back to Projects</button>
+      </div>
+    );
+  }
 
   return (
     <div>
