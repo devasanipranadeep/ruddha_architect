@@ -1,13 +1,17 @@
 import { createFileRoute, useNavigate, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Save, Upload } from "lucide-react";
-import { getAdminProjectById, updateAdminProject, type AdminProject } from "@/lib/admin-data";
+import { api, type Project } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/projects/edit/$id")({
-  loader: ({ params }) => {
-    const project = getAdminProjectById(params.id);
-    if (!project) throw notFound();
-    return { project };
+  loader: async ({ params }) => {
+    try {
+      const project = await api.getProject(params.id);
+      if (!project) throw notFound();
+      return { project };
+    } catch (error) {
+      throw notFound();
+    }
   },
   component: EditProjectPage,
 });
@@ -20,14 +24,21 @@ function EditProjectPage() {
     title: initialProject.title,
     category: initialProject.category,
     location: initialProject.location,
-    year: initialProject.year,
-    image: initialProject.image,
-    tall: initialProject.tall || false,
+    year: String(initialProject.year),
+    image: initialProject.cover_image || "",
+    tall: false,
     description: initialProject.description || "",
+    area: initialProject.area || "",
+    client_name: initialProject.client_name || "",
+    budget: initialProject.budget || "",
+    featured: initialProject.featured || false,
+    status: initialProject.status || "draft",
   });
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const categories = ["Residential", "Commercial", "Interior Design", "Landscape", "Renovation"];
+  const categories = ["Architecture", "Interior Design", "Landscape", "Renovation", "Turnkey Build", "Consulting"];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -49,6 +60,7 @@ function EditProjectPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setCoverImageFile(file);
     const reader = new FileReader();
     reader.onload = (event) => {
       setFormData((prev) => ({ ...prev, image: event.target?.result as string }));
@@ -82,14 +94,40 @@ function EditProjectPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) return;
 
-    const updated = updateAdminProject(initialProject.id, formData);
-    if (updated) {
+    setIsSubmitting(true);
+    try {
+      let coverImageUrl = formData.image;
+
+      if (coverImageFile) {
+        const uploadResponse = await api.uploadImage(coverImageFile);
+        coverImageUrl = uploadResponse.url;
+      }
+
+      await api.updateProject(initialProject.id, {
+        title: formData.title,
+        slug: formData.slug,
+        category: formData.category,
+        location: formData.location,
+        year: parseInt(formData.year),
+        area: formData.area,
+        description: formData.description,
+        client_name: formData.client_name,
+        budget: formData.budget,
+        cover_image: coverImageUrl,
+        featured: formData.featured,
+        status: formData.status,
+      });
       navigate({ to: "/admin/projects" });
+    } catch (error) {
+      console.error("Failed to update project:", error);
+      alert("Failed to update project. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -252,10 +290,11 @@ function EditProjectPage() {
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex items-center gap-2 bg-gold text-primary-foreground px-6 py-3 rounded-lg hover:bg-gold/90 transition-colors"
+              disabled={isSubmitting}
+              className="flex items-center gap-2 bg-gold text-primary-foreground px-6 py-3 rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-60"
             >
               <Save size={18} />
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
             <button
               type="button"
