@@ -15,6 +15,11 @@ dist-ssr
 .tanstack/**
 .nitro
 *.local
+package-lock.json
+
+# Environment files
+.env
+.env.local
 
 # Wrangler / Cloudflare
 .wrangler/
@@ -26,6 +31,7 @@ backend/venv2/
 backend/__pycache__/
 backend/*.pyc
 backend/uploads/*
+backend/stats.json
 !backend/uploads/.gitkeep
 
 # Editor directories and files
