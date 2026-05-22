@@ -231,8 +231,9 @@ async def upload_image(file: UploadFile = File(...), current_admin: dict = Depen
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
-    # Return URL (in production, this would be a cloud storage URL)
-    file_url = f"http://localhost:8001/uploads/{unique_filename}"
+    # Build URL dynamically based on environment
+    base_url = os.getenv("BACKEND_URL", "http://localhost:8001")
+    file_url = f"{base_url}/uploads/{unique_filename}"
     
     return {"filename": unique_filename, "url": file_url}
 
