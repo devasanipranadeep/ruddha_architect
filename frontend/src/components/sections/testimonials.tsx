@@ -29,8 +29,6 @@ export function Testimonials() {
               <p className="font-display text-3xl lg:text-5xl leading-[1.25] italic text-foreground/90">
                 "{t.quote}"
               </p>
-              <div className="mt-10 text-[11px] uppercase tracking-luxury text-gold">{t.name}</div>
-              <div className="mt-2 text-xs text-muted-foreground">{t.role}</div>
             </motion.div>
           </AnimatePresence>
         </div>

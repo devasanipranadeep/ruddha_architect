@@ -35,10 +35,15 @@ function AdminLayout() {
     setLoading(true);
 
     try {
-      await api.login(email, password);
+      const result = await api.login(email, password);
+      console.log("Login successful:", result);
       setShowLogin(false);
       setPassword("");
+      // Force a re-check of authentication
+      const token = api.getToken();
+      console.log("Token after login:", token);
     } catch (err) {
+      console.error("Login error:", err);
       setError("Invalid email or password");
     } finally {
       setLoading(false);

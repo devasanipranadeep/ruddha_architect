@@ -15,7 +15,7 @@ export const Route = createFileRoute("/portfolio/$slug")({
       // Fallback to static data if backend is not available
       const { getAdminProjects } = require("@/lib/admin-data");
       const projects = getAdminProjects();
-      const project = projects.find((p) => p.slug === params.slug);
+      const project = projects.find((p: any) => p.slug === params.slug);
       if (!project) throw notFound();
       return { project, projects };
     }

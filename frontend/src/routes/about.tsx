@@ -4,6 +4,7 @@ import { IMAGES, SITE } from "@/data/site";
 import { CTA } from "@/components/sections/cta";
 import { api } from "@/lib/api";
 import { useEffect, useState } from "react";
+import aboutImage from "@/assets/about.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -58,7 +59,7 @@ function AboutPage() {
         <div className="mx-auto grid max-w-[1400px] gap-16 px-6 lg:grid-cols-12 lg:px-12">
           <Reveal className="lg:col-span-6 flex items-center">
             <div className="image-zoom w-full">
-              <img src={IMAGES.about} alt="Inside the studio" loading="lazy" width={1280} height={1600} className="w-full h-[400px] object-cover" />
+              <img src={aboutImage} alt="Inside the studio" loading="lazy" width={1280} height={1600} className="w-full h-[400px] object-cover" />
             </div>
           </Reveal>
           <div className="lg:col-span-6 flex flex-col justify-center">
