@@ -1,11 +1,11 @@
 # Deployment Guide
 
-This guide will help you deploy the Ruddha Architects & Interiors website with separate frontend and backend deployments.
+This guide will help you deploy the Ruddha Architects & Interiors website. The frontend uses TanStack Start with SSR, which is designed for Cloudflare Pages.
 
 ## Prerequisites
 
 - GitHub account with the repository pushed
-- Vercel account (for frontend)
+- Cloudflare account (for frontend) - [https://pages.cloudflare.com](https://pages.cloudflare.com)
 - Render account (for backend) - [https://render.com](https://render.com)
 - Supabase account (database) - already configured
 
@@ -30,53 +30,54 @@ This guide will help you deploy the Ruddha Architects & Interiors website with s
 Add these environment variables in Render dashboard:
 
 ```
-SUPABASE_URL=your-supabase-url
-SUPABASE_KEY=your-supabase-key
+SUPABASE_URL=https://veeonffibrkunboagkdu.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZW9uZmZpYnJrdW5ib2Fna2R1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NDA3MDYsImV4cCI6MjA5NTAxNjcwNn0.yJrH31gXOyn6mrIrWOl2h7SjqPDhdEGibm4I-luQT9I
 ADMIN_EMAIL=ruddha.arch@gmail.com
-ADMIN_PASSWORD=your-secure-password
-JWT_SECRET_KEY=your-secret-key
+ADMIN_PASSWORD=20B@r1124
+JWT_SECRET_KEY=ruddha-secret-key-2024
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
+SMTP_USER=ruddha.arch@gmail.com
 SMTP_PASSWORD=your-app-password
 EMAIL_FROM=ruddha.arch@gmail.com
-FRONTEND_URL=https://your-frontend-url.vercel.app
+FRONTEND_URL=https://your-frontend-url.pages.dev
 ```
 
 ### 1.4 Deploy
 1. Click "Create Web Service"
 2. Wait for deployment to complete
-3. Copy the deployed URL (e.g., `https://ruddha-architects-api.onrender.com`)
+3. Copy the deployed URL (e.g., `https://ruddha-architect-api.onrender.com`)
 
 ---
 
-## Step 2: Deploy Frontend (React) on Vercel
+## Step 2: Deploy Frontend (TanStack Start) on Cloudflare Pages
 
-### 2.1 Create a Vercel Account
-1. Go to [https://vercel.com](https://vercel.com) and sign up
+### 2.1 Create a Cloudflare Account
+1. Go to [https://pages.cloudflare.com](https://pages.cloudflare.com) and sign up
 2. Connect your GitHub account
 
 ### 2.2 Import Project
-1. Click "Add New" → "Project"
+1. Click "Create a project" → "Connect to Git"
 2. Select your `ruddha_architect` repository
-3. Configure the project:
-   - **Framework Preset**: Vite
-   - **Root Directory**: `./` (root)
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
+3. Configure the build settings:
+   - **Project name**: `ruddha-architects`
+   - **Production branch**: `main`
+   - **Framework preset**: `None`
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Root directory**: `/` (root)
 
 ### 2.3 Set Environment Variables
-Add this environment variable in Vercel dashboard:
+Add this environment variable in Cloudflare Pages dashboard:
 
 ```
-VITE_API_URL=https://your-backend-url.onrender.com/api
+VITE_API_URL=https://ruddha-architect-api.onrender.com/api
 ```
-(Replace with your actual backend URL from Step 1.4)
 
 ### 2.4 Deploy
-1. Click "Deploy"
+1. Click "Save and Deploy"
 2. Wait for deployment to complete
-3. Copy the deployed URL (e.g., `https://ruddha-architects.vercel.app`)
+3. Copy the deployed URL (e.g., `https://ruddha-architects.pages.dev`)
 
 ---
 
@@ -87,9 +88,9 @@ After deploying the frontend, update the backend CORS:
 1. Go to your Render dashboard
 2. Open the backend service
 3. Go to "Environment" section
-4. Update `FRONTEND_URL` to your Vercel URL:
+4. Update `FRONTEND_URL` to your Cloudflare Pages URL:
    ```
-   FRONTEND_URL=https://your-frontend-url.vercel.app
+   FRONTEND_URL=https://your-frontend-url.pages.dev
    ```
 5. Click "Save Changes" to redeploy
 
@@ -97,7 +98,7 @@ After deploying the frontend, update the backend CORS:
 
 ## Step 4: Verify Deployment
 
-1. Visit your frontend URL (Vercel)
+1. Visit your frontend URL (Cloudflare Pages)
 2. Check if the site loads correctly
 3. Try accessing the admin panel at `/admin`
 4. Test the contact form
@@ -113,12 +114,12 @@ After deploying the frontend, update the backend CORS:
 - Verify Supabase connection
 
 ### Frontend Issues
-- Check Vercel deployment logs
+- Check Cloudflare Pages deployment logs
 - Verify `VITE_API_URL` is correct
 - Ensure backend is running and accessible
 
 ### CORS Errors
-- Make sure `FRONTEND_URL` in backend matches your Vercel URL
+- Make sure `FRONTEND_URL` in backend matches your Cloudflare Pages URL
 - Check that backend allows your frontend origin
 
 ### Image Upload Issues
@@ -129,12 +130,8 @@ After deploying the frontend, update the backend CORS:
 
 ## Alternative Deployment Options
 
-### Netlify (Frontend Alternative)
-Similar to Vercel:
-1. Connect your repository to Netlify
-2. Set build command: `npm run build`
-3. Set publish directory: `dist`
-4. Add environment variable: `VITE_API_URL`
+### Vercel (Not Recommended)
+Vercel does not support TanStack Start out of the box without additional SSR configuration. Cloudflare Pages is recommended.
 
 ### Railway (Backend Alternative)
 1. Connect your repository to Railway
@@ -147,7 +144,7 @@ Similar to Vercel:
 ## Production Checklist
 
 - [ ] Backend deployed on Render
-- [ ] Frontend deployed on Vercel
+- [ ] Frontend deployed on Cloudflare Pages
 - [ ] Environment variables configured for both
 - [ ] CORS configured correctly
 - [ ] Admin panel accessible
@@ -160,7 +157,7 @@ Similar to Vercel:
 
 ## Post-Deployment
 
-1. **Monitor Logs**: Regularly check Render and Vercel logs
+1. **Monitor Logs**: Regularly check Render and Cloudflare Pages logs
 2. **Update CORS**: If you change frontend URL, update backend CORS
 3. **Backup Database**: Regularly backup your Supabase database
 4. **Update Dependencies**: Keep dependencies updated for security
