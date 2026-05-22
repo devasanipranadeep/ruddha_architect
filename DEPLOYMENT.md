@@ -23,7 +23,7 @@ This guide will help you deploy the Ruddha Architects & Interiors website. The f
 3. Configure the service:
    - **Name**: `ruddha-architects-api`
    - **Environment**: `Docker`
-   - **Root Directory**: `server`
+   - **Root Directory**: `backend`
    - **Dockerfile Path**: `Dockerfile`
 
 ### 1.3 Set Environment Variables
@@ -64,8 +64,8 @@ FRONTEND_URL=https://your-frontend-url.pages.dev
    - **Production branch**: `main`
    - **Framework preset**: `None`
    - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-   - **Root directory**: `/` (root)
+   - **Build output directory**: `frontend/dist`
+   - **Root directory**: `frontend`
 
 ### 2.3 Set Environment Variables
 Add this environment variable in Cloudflare Pages dashboard:
