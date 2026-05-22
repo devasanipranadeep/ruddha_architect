@@ -56,6 +56,8 @@ export interface UploadResponse {
 
 let authToken: string | null = null;
 
+const isServer = typeof window === 'undefined';
+
 export const api = {
   // Auth
   async login(email: string, password: string): Promise<LoginResponse> {
@@ -74,7 +76,7 @@ export const api = {
 
     const data = await response.json();
     authToken = data.access_token;
-    if (authToken) {
+    if (authToken && !isServer) {
       localStorage.setItem('auth_token', authToken);
     }
     return data;
@@ -82,11 +84,13 @@ export const api = {
 
   logout() {
     authToken = null;
-    localStorage.removeItem('auth_token');
+    if (!isServer) {
+      localStorage.removeItem('auth_token');
+    }
   },
 
   getToken(): string | null {
-    if (!authToken) {
+    if (!authToken && !isServer) {
       authToken = localStorage.getItem('auth_token');
     }
     return authToken;

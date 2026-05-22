@@ -2,6 +2,7 @@ const AUTH_KEY = "ruddha_admin_auth";
 const TOKEN_KEY = "ruddha_admin_token";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001/api";
+const isServer = typeof window === "undefined";
 
 export async function login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
   try {
@@ -19,8 +20,10 @@ export async function login(email: string, password: string): Promise<{ success:
     }
 
     const data = await response.json();
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    localStorage.setItem(AUTH_KEY, Date.now().toString());
+    if (!isServer) {
+      localStorage.setItem(TOKEN_KEY, data.access_token);
+      localStorage.setItem(AUTH_KEY, Date.now().toString());
+    }
     return { success: true };
   } catch (error) {
     console.error("Login error:", error);
@@ -29,11 +32,14 @@ export async function login(email: string, password: string): Promise<{ success:
 }
 
 export function logout(): void {
-  localStorage.removeItem(AUTH_KEY);
-  localStorage.removeItem(TOKEN_KEY);
+  if (!isServer) {
+    localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+  }
 }
 
 export function isAuthenticated(): boolean {
+  if (isServer) return false;
   const auth = localStorage.getItem(AUTH_KEY);
   const token = localStorage.getItem(TOKEN_KEY);
   if (!auth || !token) return false;
@@ -52,5 +58,6 @@ export function isAuthenticated(): boolean {
 }
 
 export function getAuthToken(): string | null {
+  if (isServer) return null;
   return localStorage.getItem(TOKEN_KEY);
 }
