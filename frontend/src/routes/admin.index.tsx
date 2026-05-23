@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { FolderOpen, Plus, TrendingUp, Edit2, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, type Project } from "@/lib/api";
@@ -8,7 +8,6 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function AdminDashboard() {
-  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [showStatsEditor, setShowStatsEditor] = useState(false);
@@ -112,20 +111,20 @@ function AdminDashboard() {
           <div className="mb-8">
             <h2 className="font-display text-2xl mb-4">Quick Actions</h2>
             <div className="flex gap-4">
-              <button
-                onClick={() => navigate({ to: "/admin/projects" })}
+              <a
+                href="/admin/projects"
                 className="flex items-center gap-2 bg-gold text-primary-foreground px-6 py-3 rounded-lg hover:bg-gold/90 transition-colors"
               >
                 <Plus size={18} />
                 Add New Project
-              </button>
-              <button
-                onClick={() => navigate({ to: "/admin/projects" })}
+              </a>
+              <a
+                href="/admin/projects"
                 className="flex items-center gap-2 border border-border px-6 py-3 rounded-lg hover:bg-foreground/5 transition-colors"
               >
                 <FolderOpen size={18} />
                 Manage Projects
-              </button>
+              </a>
             </div>
           </div>
 
@@ -147,9 +146,9 @@ function AdminDashboard() {
                     <tr>
                       <td colSpan={4} className="px-6 py-12 text-center text-foreground/60">
                         No projects yet.{" "}
-                        <button onClick={() => navigate({ to: "/admin/projects" })} className="text-gold hover:underline">
+                        <a href="/admin/projects" className="text-gold hover:underline">
                           Add your first project
-                        </button>
+                        </a>
                       </td>
                     </tr>
                   ) : (

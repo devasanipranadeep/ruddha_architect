@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { LayoutDashboard, FolderOpen, LogOut, Lock, X, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -6,22 +6,32 @@ import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  ssr: false,
 });
 
 function AdminLayout() {
-  const navigate = useNavigate();
   const router = useRouter();
-  const [showLogin, setShowLogin] = useState(() => !api.getToken());
+  const [isClient, setIsClient] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentPath, setCurrentPath] = useState(router.state.location.pathname);
+  const [currentPath, setCurrentPath] = useState("");
+
+  useEffect(() => {
+    setIsClient(true);
+    const token = api.getToken();
+    setShowLogin(!token);
+    setCurrentPath(router.state.location.pathname);
+  }, []);
 
   useEffect(() => {
     setCurrentPath(router.state.location.pathname);
   }, [router.state.location.pathname]);
+
+  if (!isClient) {
+    return <div className="min-h-screen bg-background" />;
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,9 +111,9 @@ function AdminLayout() {
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/" className="text-sm text-foreground/60 hover:text-foreground transition-colors">
+            <a href="/" className="text-sm text-foreground/60 hover:text-foreground transition-colors">
               ← Back to website
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -116,9 +126,9 @@ function AdminLayout() {
         {/* Sidebar */}
         <aside className="w-64 border-r border-border bg-card min-h-screen p-6">
           <div className="mb-8">
-            <Link to="/" className="font-display text-2xl text-gradient-gold">
+            <a href="/" className="font-display text-2xl text-gradient-gold">
               Ruddha Admin
-            </Link>
+            </a>
           </div>
           
           <nav className="space-y-2">
@@ -141,12 +151,12 @@ function AdminLayout() {
               <LogOut size={18} />
               Logout
             </button>
-            <Link
-              to="/"
+            <a
+              href="/"
               className="flex items-center gap-3 px-4 py-3 text-sm text-foreground/60 hover:text-foreground transition-colors"
             >
               Back to Site
-            </Link>
+            </a>
           </div>
         </aside>
 
@@ -163,8 +173,8 @@ function AdminLink({ to, icon, children, currentPath }: { to: string; icon: Reac
   const isActive = currentPath === to;
   
   return (
-    <Link
-      to={to}
+    <a
+      href={to}
       className={cn(
         "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors",
         isActive
@@ -174,6 +184,6 @@ function AdminLink({ to, icon, children, currentPath }: { to: string; icon: Reac
     >
       {icon}
       {children}
-    </Link>
+    </a>
   );
 }
