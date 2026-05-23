@@ -15,7 +15,8 @@ from app.schemas.schemas import (
 )
 from app.utils.storage import (
     get_projects, get_project_by_id, create_project, 
-    update_project, delete_project, create_contact_message
+    update_project, delete_project, create_contact_message,
+    upload_file_to_storage
 )
 from app.services.notification_service import send_contact_notification, send_whatsapp_message
 
@@ -217,25 +218,21 @@ async def health_check():
 # File upload endpoint
 @router.post("/upload/image")
 async def upload_image(file: UploadFile = File(...), current_admin: dict = Depends(get_current_admin)):
-    """Upload an image file (admin only)."""
+    """Upload an image file to Supabase Storage (admin only)."""
     # Validate file type
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     
-    # Generate unique filename
-    file_extension = file.filename.split(".")[-1]
-    unique_filename = f"{uuid.uuid4()}.{file_extension}"
-    file_path = os.path.join(UPLOAD_DIR, unique_filename)
+    # Read file bytes
+    file_bytes = await file.read()
     
-    # Save file
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    # Upload to Supabase Storage
+    try:
+        public_url = upload_file_to_storage(file_bytes, file.filename, file.content_type)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
     
-    # Build URL dynamically based on environment
-    base_url = os.getenv("BACKEND_URL", "http://localhost:8001")
-    file_url = f"{base_url}/uploads/{unique_filename}"
-    
-    return {"filename": unique_filename, "url": file_url}
+    return {"filename": file.filename, "url": public_url}
 
 
 # Get categories endpoint

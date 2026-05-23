@@ -1,9 +1,32 @@
 from typing import List, Dict, Optional
+import uuid
 from supabase import Client, create_client
 from app.core.config import settings
 
 # Initialize Supabase client
 supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+
+# Storage bucket name
+STORAGE_BUCKET = "project-images"
+
+
+def upload_file_to_storage(file_bytes: bytes, filename: str, content_type: str) -> str:
+    """Upload a file to Supabase Storage and return the public URL."""
+    # Generate unique filename
+    extension = filename.split(".")[-1] if "." in filename else "jpg"
+    unique_name = f"{uuid.uuid4()}.{extension}"
+    file_path = f"uploads/{unique_name}"
+    
+    # Upload to Supabase Storage
+    supabase.storage.from_(STORAGE_BUCKET).upload(
+        path=file_path,
+        file=file_bytes,
+        file_options={"content-type": content_type}
+    )
+    
+    # Get public URL
+    public_url = supabase.storage.from_(STORAGE_BUCKET).get_public_url(file_path)
+    return public_url
 
 
 # Projects operations
