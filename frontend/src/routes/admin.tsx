@@ -6,35 +6,22 @@ import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
+  ssr: false,
 });
 
 function AdminLayout() {
   const navigate = useNavigate();
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
+  const [showLogin, setShowLogin] = useState(() => !api.getToken());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentPath, setCurrentPath] = useState("");
-
-  useEffect(() => {
-    setIsClient(true);
-    // Check if user is authenticated
-    const token = api.getToken();
-    setShowLogin(!token);
-    setCurrentPath(router.state.location.pathname);
-  }, [router]);
+  const [currentPath, setCurrentPath] = useState(router.state.location.pathname);
 
   useEffect(() => {
     setCurrentPath(router.state.location.pathname);
   }, [router.state.location.pathname]);
-
-  // During SSR, render a minimal shell to avoid localStorage/window crashes
-  if (!isClient) {
-    return <div className="min-h-screen bg-background" />;
-  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
