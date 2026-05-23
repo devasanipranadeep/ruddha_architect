@@ -12,7 +12,7 @@ function Stat({ n, suffix, label, delay }: { n: number; suffix: string; label: s
       style={{ transitionDelay: `${delay}ms` }}
       className={`transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
     >
-      <div className="font-display text-6xl lg:text-8xl text-gradient-gold leading-none">
+      <div className="font-display text-4xl md:text-6xl lg:text-8xl text-gradient-gold leading-none">
         {v}
         {suffix}
       </div>
@@ -56,7 +56,7 @@ export function Stats() {
     <section className="relative border-y border-border bg-charcoal/40 py-24 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-30" />
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-12">
-        <div className={`grid gap-12 lg:gap-8 ${visibleStats.length === 1 ? 'grid-cols-1' : visibleStats.length === 2 ? 'grid-cols-2' : visibleStats.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
+        <div className={`grid grid-cols-2 gap-8 lg:gap-8 ${visibleStats.length === 1 ? 'sm:grid-cols-1' : visibleStats.length === 2 ? 'sm:grid-cols-2' : visibleStats.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-4'}`}>
           {visibleStats.map((s, i) => (
             <Stat key={s.label} {...s} delay={i * 120} />
           ))}
