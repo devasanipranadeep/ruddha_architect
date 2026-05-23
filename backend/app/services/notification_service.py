@@ -6,6 +6,9 @@ from app.core.config import settings
 
 def send_email(subject: str, body: str, to_email: str) -> bool:
     """Send an email using SMTP."""
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        print("SMTP not configured, skipping email")
+        return False
     try:
         msg = MIMEMultipart()
         msg['From'] = settings.EMAIL_FROM
@@ -14,7 +17,7 @@ def send_email(subject: str, body: str, to_email: str) -> bool:
         
         msg.attach(MIMEText(body, 'plain'))
         
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
             server.starttls()
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             server.send_message(msg)

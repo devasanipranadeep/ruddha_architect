@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
@@ -125,7 +125,7 @@ async def delete_project_endpoint(project_id: str, current_admin: dict = Depends
 
 # Contact endpoints
 @router.post("/contact", response_model=ContactMessageResponse, status_code=201)
-async def submit_contact(message: ContactMessageCreate):
+async def submit_contact(message: ContactMessageCreate, background_tasks: BackgroundTasks):
     """Submit contact form."""
     from datetime import datetime
     # Save message
@@ -134,8 +134,9 @@ async def submit_contact(message: ContactMessageCreate):
     message_data["created_at"] = datetime.now().isoformat()
     saved_message = create_contact_message(message_data)
     
-    # Send email notification
-    send_contact_notification(
+    # Send notifications in background (don't block the response)
+    background_tasks.add_task(
+        send_contact_notification,
         message.name,
         message.email,
         message.phone,
@@ -143,9 +144,8 @@ async def submit_contact(message: ContactMessageCreate):
         message.message
     )
     
-    # Send WhatsApp notification
     whatsapp_msg = f"New inquiry from {message.name} ({message.phone}). Service: {message.service}. Email: {message.email}"
-    send_whatsapp_message(settings.ADMIN_EMAIL, whatsapp_msg)  # Using email as phone placeholder
+    background_tasks.add_task(send_whatsapp_message, settings.ADMIN_EMAIL, whatsapp_msg)
     
     return saved_message
 
