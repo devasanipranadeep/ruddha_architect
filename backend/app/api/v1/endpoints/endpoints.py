@@ -16,7 +16,7 @@ from app.schemas.schemas import (
 from app.utils.storage import (
     get_projects, get_project_by_id, create_project, 
     update_project, delete_project, create_contact_message,
-    upload_file_to_storage
+    upload_file_to_storage, get_stats, update_stats
 )
 from app.services.notification_service import send_contact_notification, send_whatsapp_message
 
@@ -177,35 +177,15 @@ async def delete_contact_message(message_id: str, current_admin: dict = Depends(
 
 
 @router.get("/stats")
-async def get_stats():
+async def get_stats_endpoint():
     """Get site statistics."""
-    import json
-    import os
-    
-    stats_file = os.path.join(os.path.dirname(__file__), "../../../stats.json")
-    try:
-        with open(stats_file, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {
-            "projects_delivered": 142,
-            "years_of_practice": 18,
-            "design_awards": 27,
-            "repeat_clients": 96
-        }
+    return get_stats()
 
 
 @router.put("/stats")
-async def update_stats(stats: dict, current_admin: dict = Depends(get_current_admin)):
+async def update_stats_endpoint(stats_data: dict, current_admin: dict = Depends(get_current_admin)):
     """Update site statistics (admin only)."""
-    import json
-    import os
-    
-    stats_file = os.path.join(os.path.dirname(__file__), "../../../stats.json")
-    with open(stats_file, 'w') as f:
-        json.dump(stats, f, indent=2)
-    
-    return stats
+    return update_stats(stats_data)
 
 
 # Health check

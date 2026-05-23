@@ -89,3 +89,41 @@ def delete_contact_message(message_id: str) -> bool:
     """Delete a contact message."""
     response = supabase.table('contact_messages').delete().eq('id', message_id).execute()
     return len(response.data) > 0
+
+
+# Stats operations
+DEFAULT_STATS = {
+    "projects_delivered": 0,
+    "years_of_practice": 0,
+    "design_awards": 0,
+    "repeat_clients": 0,
+}
+
+
+def get_stats() -> Dict:
+    """Get site statistics from Supabase."""
+    response = supabase.table('site_stats').select('*').eq('id', 'main').execute()
+    if response.data:
+        row = response.data[0]
+        return {
+            "projects_delivered": row.get("projects_delivered", 0),
+            "years_of_practice": row.get("years_of_practice", 0),
+            "design_awards": row.get("design_awards", 0),
+            "repeat_clients": row.get("repeat_clients", 0),
+        }
+    return DEFAULT_STATS.copy()
+
+
+def update_stats(stats_data: Dict) -> Dict:
+    """Update site statistics in Supabase."""
+    row = {
+        "id": "main",
+        "projects_delivered": stats_data.get("projects_delivered", 0),
+        "years_of_practice": stats_data.get("years_of_practice", 0),
+        "design_awards": stats_data.get("design_awards", 0),
+        "repeat_clients": stats_data.get("repeat_clients", 0),
+    }
+    response = supabase.table('site_stats').upsert(row).execute()
+    if response.data:
+        return response.data[0]
+    return row
