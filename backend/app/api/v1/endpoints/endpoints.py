@@ -120,8 +120,17 @@ async def update_project_endpoint(project_id: str, project: ProjectResponse, cur
 @router.delete("/projects/{project_id}", status_code=204)
 async def delete_project_endpoint(project_id: str, current_admin: dict = Depends(get_current_admin)):
     """Delete a project (admin only)."""
-    if not delete_project(project_id):
-        raise HTTPException(status_code=404, detail="Project not found")
+    try:
+        if not delete_project(project_id):
+            raise HTTPException(status_code=404, detail="Project not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error deleting project: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to delete project. Database error: {str(e)}"
+        )
 
 
 # Contact endpoints
