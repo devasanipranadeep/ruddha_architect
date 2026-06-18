@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================
-# Ruddha Architects - VPS Deployment Script
+# Ruddhaa Architects - VPS Deployment Script
 # Run this on a fresh Ubuntu 22.04 VPS as root
 # Usage: ssh root@YOUR_VPS_IP 'bash -s' < deploy-vps.sh
 # =============================================================
@@ -22,7 +22,7 @@ SMTP_PASSWORD="your-gmail-app-password"  # Generate at https://myaccount.google.
 # ──────────────────────────────────────────────────────────────
 
 echo "========================================="
-echo "  Ruddha Architects - VPS Setup"
+echo "  Ruddhaa Architects - VPS Setup"
 echo "========================================="
 
 # ─── STEP 1: System Update ───────────────────────────────────

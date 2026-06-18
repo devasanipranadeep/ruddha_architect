@@ -11,7 +11,7 @@ import { CTA } from "@/components/sections/cta";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ruddha — Architects & Interiors" },
+      { title: "Ruddhaa — Architects & Interiors" },
       { name: "description", content: "Cinematic residential, commercial & landscape architecture. Studio of restraint working at the scale of memory." },
     ],
     links: [{ rel: "canonical", href: "/" }],

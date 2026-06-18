@@ -10,14 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as PortfolioRouteImport } from './routes/portfolio'
-import { Route as EstimatorRouteImport } from './routes/estimator'
+import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
+import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminProjectsEditIdRouteImport } from './routes/admin.projects.edit.$id'
@@ -27,14 +26,9 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PortfolioRoute = PortfolioRouteImport.update({
-  id: '/portfolio',
-  path: '/portfolio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EstimatorRoute = EstimatorRouteImport.update({
-  id: '/estimator',
-  path: '/estimator',
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -62,10 +56,10 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const PortfolioSlugRoute = PortfolioSlugRouteImport.update({
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
-  getParentRoute: () => PortfolioRoute,
+  getParentRoute: () => ProjectsRoute,
 } as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
@@ -88,12 +82,11 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
-  '/estimator': typeof EstimatorRoute
-  '/portfolio': typeof PortfolioRouteWithChildren
+  '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
-  '/portfolio/$slug': typeof PortfolioSlugRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/projects/edit/$id': typeof AdminProjectsEditIdRoute
 }
@@ -101,12 +94,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/estimator': typeof EstimatorRoute
-  '/portfolio': typeof PortfolioRouteWithChildren
+  '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
-  '/portfolio/$slug': typeof PortfolioSlugRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/admin/projects/edit/$id': typeof AdminProjectsEditIdRoute
 }
@@ -116,12 +108,11 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
-  '/estimator': typeof EstimatorRoute
-  '/portfolio': typeof PortfolioRouteWithChildren
+  '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
-  '/portfolio/$slug': typeof PortfolioSlugRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/projects/edit/$id': typeof AdminProjectsEditIdRoute
 }
@@ -132,12 +123,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/contact'
-    | '/estimator'
-    | '/portfolio'
+    | '/projects'
     | '/services'
     | '/admin/messages'
     | '/admin/projects'
-    | '/portfolio/$slug'
+    | '/projects/$slug'
     | '/admin/'
     | '/admin/projects/edit/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -145,12 +135,11 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
-    | '/estimator'
-    | '/portfolio'
+    | '/projects'
     | '/services'
     | '/admin/messages'
     | '/admin/projects'
-    | '/portfolio/$slug'
+    | '/projects/$slug'
     | '/admin'
     | '/admin/projects/edit/$id'
   id:
@@ -159,12 +148,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/contact'
-    | '/estimator'
-    | '/portfolio'
+    | '/projects'
     | '/services'
     | '/admin/messages'
     | '/admin/projects'
-    | '/portfolio/$slug'
+    | '/projects/$slug'
     | '/admin/'
     | '/admin/projects/edit/$id'
   fileRoutesById: FileRoutesById
@@ -174,8 +162,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   ContactRoute: typeof ContactRoute
-  EstimatorRoute: typeof EstimatorRoute
-  PortfolioRoute: typeof PortfolioRouteWithChildren
+  ProjectsRoute: typeof ProjectsRouteWithChildren
   ServicesRoute: typeof ServicesRoute
 }
 
@@ -188,18 +175,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/portfolio': {
-      id: '/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
-      preLoaderRoute: typeof PortfolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/estimator': {
-      id: '/estimator'
-      path: '/estimator'
-      fullPath: '/estimator'
-      preLoaderRoute: typeof EstimatorRouteImport
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -237,12 +217,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/portfolio/$slug': {
-      id: '/portfolio/$slug'
+    '/projects/$slug': {
+      id: '/projects/$slug'
       path: '/$slug'
-      fullPath: '/portfolio/$slug'
-      preLoaderRoute: typeof PortfolioSlugRouteImport
-      parentRoute: typeof PortfolioRoute
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
+      parentRoute: typeof ProjectsRoute
     }
     '/admin/projects': {
       id: '/admin/projects'
@@ -294,16 +274,16 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface PortfolioRouteChildren {
-  PortfolioSlugRoute: typeof PortfolioSlugRoute
+interface ProjectsRouteChildren {
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
 }
 
-const PortfolioRouteChildren: PortfolioRouteChildren = {
-  PortfolioSlugRoute: PortfolioSlugRoute,
+const ProjectsRouteChildren: ProjectsRouteChildren = {
+  ProjectsSlugRoute: ProjectsSlugRoute,
 }
 
-const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
-  PortfolioRouteChildren,
+const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
+  ProjectsRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
@@ -311,8 +291,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   ContactRoute: ContactRoute,
-  EstimatorRoute: EstimatorRoute,
-  PortfolioRoute: PortfolioRouteWithChildren,
+  ProjectsRoute: ProjectsRouteWithChildren,
   ServicesRoute: ServicesRoute,
 }
 export const routeTree = rootRouteImport

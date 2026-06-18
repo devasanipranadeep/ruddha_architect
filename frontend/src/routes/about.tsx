@@ -9,9 +9,9 @@ import aboutImage from "@/assets/about.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Ruddha Architects & Interiors" },
-      { name: "description", content: "Founded in 2007, Ruddha is a small, deliberate studio of architects, interior designers and craftspeople." },
-      { property: "og:title", content: "About — Ruddha" },
+      { title: "About — Ruddhaa Architects & Interiors" },
+      { name: "description", content: "Founded in 2007, Ruddhaa is a small, deliberate studio of architects, interior designers and craftspeople." },
+      { property: "og:title", content: "About — Ruddhaa" },
     ],
     links: [{ rel: "canonical", href: "/about" }],
   }),

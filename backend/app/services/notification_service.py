@@ -43,7 +43,7 @@ Message:
 {message}
 
 ---
-Ruddha Architects & Interiors
+Ruddhaa Architects & Interiors
     """
     
     # Send email to admin

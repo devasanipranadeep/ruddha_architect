@@ -32,6 +32,8 @@ function ProjectsPage() {
   });
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string>("");
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const CATEGORIES = [
@@ -99,6 +101,13 @@ function ProjectsPage() {
         coverImageUrl = uploadResponse.url;
       }
 
+      // Upload gallery images
+      const galleryImageUrls: string[] = [];
+      for (const file of galleryFiles) {
+        const uploadResponse = await api.uploadImage(file);
+        galleryImageUrls.push(uploadResponse.url);
+      }
+
       const projectData: ProjectCreate = {
         title: formData.title,
         slug: formData.slug,
@@ -110,7 +119,7 @@ function ProjectsPage() {
         client_name: formData.client_name,
         budget: formData.budget,
         cover_image: coverImageUrl,
-        gallery_images: formData.gallery_images,
+        gallery_images: galleryImageUrls,
         featured: formData.featured,
         status: formData.status,
       };
@@ -135,6 +144,8 @@ function ProjectsPage() {
       });
       setCoverImageFile(null);
       setCoverImagePreview("");
+      setGalleryFiles([]);
+      setGalleryPreviews([]);
     } catch (error) {
       console.error("Failed to create project:", error);
       alert("Failed to create project. Please try again.");
@@ -157,12 +168,34 @@ function ProjectsPage() {
     reader.readAsDataURL(file);
   };
 
+  const handleGalleryUploadNew = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files);
+    setGalleryFiles((prev) => [...prev, ...newFiles]);
+
+    newFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setGalleryPreviews((prev) => [...prev, event.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  };
+
+  const removeGalleryPreview = (index: number) => {
+    setGalleryFiles((prev) => prev.filter((_, i) => i !== index));
+    setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display text-4xl">Projects</h1>
-          <p className="mt-2 text-foreground/60">Manage your portfolio projects</p>
+          <p className="mt-2 text-foreground/60">Manage your projects</p>
         </div>
         <button
           onClick={() => setShowAddForm(true)}
@@ -407,6 +440,35 @@ function ProjectsPage() {
                   className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:border-gold resize-none"
                   placeholder="Project description"
                 />
+              </div>
+
+              {/* Gallery Images */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Gallery Images</label>
+                <p className="text-xs text-foreground/60 mb-3">Add additional project images.</p>
+                
+                {galleryPreviews.length > 0 && (
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    {galleryPreviews.map((preview, idx) => (
+                      <div key={idx} className="relative group">
+                        <img src={preview} alt={`Gallery ${idx + 1}`} className="w-full h-24 object-cover rounded-lg" />
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryPreview(idx)}
+                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <label className="flex items-center gap-3 px-4 py-3 border border-dashed border-border rounded-lg hover:bg-foreground/5 cursor-pointer transition-colors">
+                  <Plus size={18} />
+                  <span>Add gallery images</span>
+                  <input type="file" accept="image/*" multiple onChange={handleGalleryUploadNew} className="hidden" />
+                </label>
               </div>
 
               <div className="flex gap-3 justify-end pt-4">

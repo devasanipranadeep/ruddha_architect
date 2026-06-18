@@ -1,23 +1,36 @@
 import { useMemo, useState, useEffect } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatch } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { CATEGORIES } from "@/data/site";
 import { api, type Project } from "@/lib/api";
 import { Reveal, SectionLabel } from "@/components/animations/reveal";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/portfolio")({
+export const Route = createFileRoute("/projects")({
   head: () => ({
     meta: [
-      { title: "Portfolio — Ruddha Architects & Interiors" },
-      { name: "description", content: "Residential, commercial, interior, landscape and renovation projects by Ruddha." },
+      { title: "Projects — Ruddhaa Architects & Interiors" },
+      { name: "description", content: "Residential, commercial, interior, landscape and renovation projects by Ruddhaa." },
     ],
-    links: [{ rel: "canonical", href: "/portfolio" }],
+    links: [{ rel: "canonical", href: "/projects" }],
   }),
-  component: PortfolioPage,
+  component: ProjectsLayout,
 });
 
-function PortfolioPage() {
+function ProjectsLayout() {
+  // Check if a child route (e.g. /projects/$slug) is active
+  const childMatch = useMatch({ from: "/projects/$slug", shouldThrow: false });
+
+  // If a child route is active, render only the child (project detail page)
+  if (childMatch) {
+    return <Outlet />;
+  }
+
+  // Otherwise render the projects grid
+  return <ProjectsPage />;
+}
+
+function ProjectsPage() {
   const [cat, setCat] = useState<(typeof CATEGORIES)[number]>("All");
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,9 +46,8 @@ function PortfolioPage() {
     } catch (error) {
       console.error("Failed to load projects:", error);
       // Fallback to static data if backend is not available
-      const { getAdminProjects } = require("@/lib/admin-data");
-      const staticProjects = getAdminProjects();
-      setProjects(staticProjects);
+      const { PROJECTS } = require("@/data/site");
+      setProjects(PROJECTS);
     } finally {
       setLoading(false);
     }
@@ -54,7 +66,7 @@ function PortfolioPage() {
           <Reveal><SectionLabel>Selected work</SectionLabel></Reveal>
           <Reveal delay={100}>
             <h1 className="mt-6 font-display text-6xl md:text-8xl lg:text-9xl leading-[0.95] max-w-5xl">
-              Portfolio
+              Projects
             </h1>
           </Reveal>
         </div>
@@ -91,7 +103,7 @@ function PortfolioPage() {
                   transition={{ duration: 0.6, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Link
-                    to="/portfolio/$slug"
+                    to="/projects/$slug"
                     params={{ slug: p.slug }}
                     className="group block image-zoom h-full"
                     data-cursor="hover"

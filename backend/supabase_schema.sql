@@ -26,25 +26,6 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Estimator requests table
-CREATE TABLE IF NOT EXISTS estimator_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_type VARCHAR(100) NOT NULL,
-    plot_area DECIMAL(10, 2) NOT NULL,
-    floors INTEGER NOT NULL,
-    finish_level VARCHAR(50) NOT NULL,
-    service_scope VARCHAR(100) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    location VARCHAR(255),
-    notes TEXT,
-    estimated_min DECIMAL(15, 2),
-    estimated_max DECIMAL(15, 2),
-    status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'contacted', 'converted', 'archived')),
-    pdf_url TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Projects table
 CREATE TABLE IF NOT EXISTS projects (
@@ -163,8 +144,6 @@ CREATE TABLE IF NOT EXISTS leads (
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages(status);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_created_at ON contact_messages(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_estimator_requests_status ON estimator_requests(status);
-CREATE INDEX IF NOT EXISTS idx_estimator_requests_created_at ON estimator_requests(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_projects_slug ON projects(slug);
 CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);
 CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(featured);
@@ -189,9 +168,6 @@ $$ LANGUAGE plpgsql;
 
 -- Create triggers for updated_at
 CREATE TRIGGER update_contact_messages_updated_at BEFORE UPDATE ON contact_messages
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_estimator_requests_updated_at BEFORE UPDATE ON estimator_requests
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects

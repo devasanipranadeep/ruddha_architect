@@ -1,6 +1,6 @@
-# Ruddha Architects & Interiors - Backend API
+# Ruddhaa Architects & Interiors - Backend API
 
-A simplified backend API for the Ruddha Architects & Interiors website, built with FastAPI and Supabase.
+A simplified backend API for the Ruddhaa Architects & Interiors website, built with FastAPI and Supabase.
 
 ## Features
 
@@ -165,4 +165,4 @@ The WhatsApp notification is a placeholder. To implement:
 
 ## License
 
-Copyright © 2024 Ruddha Architects & Interiors
+Copyright © 2024 Ruddhaa Architects & Interiors

@@ -55,19 +55,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ruddha Architects & Interiors — Architecture of stillness" },
+      { title: "Ruddhaa Architects & Interiors — Architecture of stillness" },
       {
         name: "description",
         content:
-          "Ruddha Architects & Interiors crafts cinematic residential, commercial and landscape spaces where light, material and stillness become architecture.",
+          "Ruddhaa Architects & Interiors crafts cinematic residential, commercial and landscape spaces where light, material and stillness become architecture.",
       },
-      { property: "og:title", content: "Ruddha Architects & Interiors" },
+      { property: "og:title", content: "Ruddhaa Architects & Interiors" },
       { property: "og:description", content: "Architecture of stillness. Interiors of intent." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0A0A0A" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "icon", href: "/LOGO.jpg", type: "image/jpeg" },
+      { rel: "stylesheet", href: appCss },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,

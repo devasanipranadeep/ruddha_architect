@@ -14,7 +14,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api'
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Ruddha Architects & Interiors" },
+      { title: "Contact — Ruddhaa Architects & Interiors" },
       { name: "description", content: "Write to the studio. We respond to every enquiry within two working days." },
     ],
     links: [{ rel: "canonical", href: "/contact" }],

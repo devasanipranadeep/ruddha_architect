@@ -9,7 +9,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api'
 export const Route = createFileRoute("/admin/messages")({
   head: () => ({
     meta: [
-      { title: "Messages — Ruddha Admin" },
+      { title: "Messages — Ruddhaa Admin" },
     ],
   }),
   component: MessagesPage,
@@ -31,6 +31,8 @@ function MessagesPage() {
   const [loading, setLoading] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadMessages();
@@ -69,25 +71,34 @@ function MessagesPage() {
   };
 
   const deleteMessage = async (messageId: string) => {
-    if (!confirm("Are you sure you want to delete this message?")) return;
-    
+    setDeleting(true);
     try {
-      await fetch(`${API_BASE_URL}/contact/${messageId}`, {
+      const response = await fetch(`${API_BASE_URL}/contact/${messageId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${api.getToken()}`,
         },
       });
-      loadMessages();
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `Failed to delete (${response.status})`);
+      }
+      
+      setConfirmDeleteId(null);
       setSelectedMessage(null);
+      await loadMessages();
     } catch (error) {
       console.error("Failed to delete message:", error);
+      alert(`Failed to delete message: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setDeleting(false);
     }
   };
 
   const handleReply = (email: string, name: string) => {
-    const subject = encodeURIComponent(`Re: Your inquiry - Ruddha Architects`);
-    const body = encodeURIComponent(`Dear ${name},\n\nThank you for your interest in Ruddha Architects & Interiors.\n\nWe have received your inquiry and will get back to you shortly.\n\nBest regards,\nRuddha Architects & Interiors`);
+    const subject = encodeURIComponent(`Re: Your inquiry - Ruddhaa Architects`);
+    const body = encodeURIComponent(`Dear ${name},\n\nThank you for your interest in Ruddhaa Architects & Interiors.\n\nWe have received your inquiry and will get back to you shortly.\n\nBest regards,\nRuddhaa Architects & Interiors`);
     window.open(`mailto:${email}?subject=${subject}&body=${body}`);
   };
 
@@ -235,7 +246,7 @@ function MessagesPage() {
       {selectedMessage && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          onClick={() => setSelectedMessage(null)}
+          onClick={() => { setSelectedMessage(null); setConfirmDeleteId(null); }}
         >
           <div
             className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
@@ -256,7 +267,7 @@ function MessagesPage() {
                 </div>
               </div>
               <button
-                onClick={() => setSelectedMessage(null)}
+                onClick={() => { setSelectedMessage(null); setConfirmDeleteId(null); }}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <X size={24} />
@@ -280,7 +291,7 @@ function MessagesPage() {
                 <Clock size={12} />
                 <span>{formatDate(selectedMessage.created_at)}</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button
                   className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                   onClick={() => updateMessageStatus(selectedMessage.id, "read")}
@@ -309,13 +320,35 @@ function MessagesPage() {
                   <Archive size={16} />
                   Archive
                 </button>
-                <button
-                  className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                  onClick={() => deleteMessage(selectedMessage.id)}
-                >
-                  <Trash2 size={16} />
-                  Delete
-                </button>
+
+                {/* Delete with inline confirmation */}
+                {confirmDeleteId === selectedMessage.id ? (
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-red-600/10 border border-red-600/30 rounded-lg">
+                    <span className="text-sm text-red-500 font-medium">Delete?</span>
+                    <button
+                      className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+                      disabled={deleting}
+                      onClick={() => deleteMessage(selectedMessage.id)}
+                    >
+                      {deleting ? "Deleting..." : "Yes"}
+                    </button>
+                    <button
+                      className="px-3 py-1 bg-border text-sm rounded hover:bg-border/80 transition-colors"
+                      disabled={deleting}
+                      onClick={() => setConfirmDeleteId(null)}
+                    >
+                      No
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    onClick={() => setConfirmDeleteId(selectedMessage.id)}
+                  >
+                    <Trash2 size={16} />
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -133,7 +133,15 @@ async def submit_contact(message: ContactMessageCreate, background_tasks: Backgr
     message_data = message.dict()
     message_data["status"] = "pending"
     message_data["created_at"] = datetime.now().isoformat()
-    saved_message = create_contact_message(message_data)
+    
+    try:
+        saved_message = create_contact_message(message_data)
+    except Exception as e:
+        print(f"Error saving contact message to Supabase: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to save message. Database error: {str(e)}"
+        )
     
     # Send notifications in background (don't block the response)
     background_tasks.add_task(
@@ -172,8 +180,17 @@ async def update_contact_message_status(message_id: str, status_data: dict, curr
 async def delete_contact_message(message_id: str, current_admin: dict = Depends(get_current_admin)):
     """Delete a contact message (admin only)."""
     from app.utils.storage import delete_contact_message
-    if not delete_contact_message(message_id):
-        raise HTTPException(status_code=404, detail="Message not found")
+    try:
+        if not delete_contact_message(message_id):
+            raise HTTPException(status_code=404, detail="Message not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error deleting contact message: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to delete message. Database error: {str(e)}"
+        )
 
 
 @router.get("/stats")

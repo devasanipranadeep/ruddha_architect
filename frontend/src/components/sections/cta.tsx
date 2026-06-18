@@ -25,19 +25,13 @@ export function CTA() {
         <Reveal delay={300}>
           <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
             <Link
-              to="/estimator"
+              to="/contact"
               className="group relative overflow-hidden border border-gold px-10 py-4 text-[11px] uppercase tracking-wider-2 text-gold"
             >
               <span className="relative z-10 transition-colors duration-500 group-hover:text-primary-foreground">
-                Get an estimate
+                Begin a conversation
               </span>
               <span className="absolute inset-0 -translate-x-full bg-gold transition-transform duration-700 group-hover:translate-x-0" />
-            </Link>
-            <Link
-              to="/contact"
-              className="text-[11px] uppercase tracking-wider-2 text-foreground/80 hover:text-gold transition-colors"
-            >
-              → Write to the studio
             </Link>
           </div>
         </Reveal>

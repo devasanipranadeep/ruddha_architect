@@ -60,7 +60,7 @@ export function Navbar() {
           </nav>
 
           <Link
-            to="/estimator"
+            to="/contact"
             className="hidden lg:inline-flex items-center gap-2 border border-gold/40 px-5 py-2.5 text-[11px] uppercase tracking-wider-2 text-gold hover:bg-gold hover:text-primary-foreground transition-colors"
           >
             Start a Project
@@ -102,7 +102,7 @@ export function Navbar() {
                 </motion.div>
               ))}
               <Link
-                to="/estimator"
+                to="/contact"
                 onClick={() => setOpen(false)}
                 className="mt-6 border border-gold px-8 py-3 text-xs uppercase tracking-wider-2 text-gold"
               >

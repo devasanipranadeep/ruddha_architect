@@ -1,13 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from app.api.v1.endpoints.endpoints import router
 import os
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Ruddha Architects & Interiors API",
-    description="Simplified backend API for Ruddha Architects & Interiors",
+    title="Ruddhaa Architects & Interiors API",
+    description="Simplified backend API for Ruddhaa Architects & Interiors",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -42,11 +43,25 @@ app.add_middleware(
 app.include_router(router, prefix="/api")
 
 
+# Global exception handler to ensure CORS headers are present on all error responses
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Catch unhandled exceptions and return a proper JSON response.
+    This ensures CORSMiddleware processes the response and adds CORS headers,
+    preventing the browser from showing misleading CORS errors.
+    """
+    print(f"Unhandled exception: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal server error: {str(exc)}"}
+    )
+
+
 @app.get("/")
 async def root():
     """Root endpoint."""
     return {
-        "message": "Ruddha Architects & Interiors API",
+        "message": "Ruddhaa Architects & Interiors API",
         "version": "1.0.0",
         "docs": "/docs"
     }

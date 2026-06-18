@@ -52,7 +52,7 @@ export function PortfolioShowcase() {
           </div>
           <Reveal delay={200}>
             <Link
-              to="/portfolio"
+              to="/projects"
               className="text-[11px] uppercase tracking-wider-2 text-gold border border-gold/40 px-6 py-3 hover:bg-gold hover:text-primary-foreground transition-colors"
             >
               View all projects
@@ -67,7 +67,7 @@ export function PortfolioShowcase() {
               delay={i * 80}
             >
               <Link
-                to="/portfolio/$slug"
+                to="/projects/$slug"
                 params={{ slug: p.slug }}
                 className="group block relative image-zoom h-full"
                 data-cursor="hover"

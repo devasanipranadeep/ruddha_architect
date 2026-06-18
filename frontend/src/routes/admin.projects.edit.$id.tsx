@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Save, Upload } from "lucide-react";
+import { ArrowLeft, Save, Upload, X, Plus } from "lucide-react";
 import { api, type Project } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/projects/edit/$id")({
@@ -28,6 +28,9 @@ function EditProjectPage() {
     status: "draft",
   });
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,6 +56,7 @@ function EditProjectPage() {
           featured: data.featured || false,
           status: data.status || "draft",
         });
+        setGalleryImages(data.gallery_images || []);
       } catch (error) {
         console.error("Failed to load project:", error);
       } finally {
@@ -88,6 +92,33 @@ function EditProjectPage() {
       setFormData((prev) => ({ ...prev, image: event.target?.result as string }));
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files);
+    setGalleryFiles((prev) => [...prev, ...newFiles]);
+
+    newFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setGalleryPreviews((prev) => [...prev, event.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+    // Reset the input so the same file can be selected again
+    e.target.value = '';
+  };
+
+  const removeExistingGalleryImage = (index: number) => {
+    setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeNewGalleryImage = (index: number) => {
+    setGalleryFiles((prev) => prev.filter((_, i) => i !== index));
+    setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const generateSlug = (title: string) => {
@@ -130,6 +161,14 @@ function EditProjectPage() {
         coverImageUrl = uploadResponse.url;
       }
 
+      // Upload new gallery images
+      const uploadedGalleryUrls: string[] = [];
+      for (const file of galleryFiles) {
+        const uploadResponse = await api.uploadImage(file);
+        uploadedGalleryUrls.push(uploadResponse.url);
+      }
+      const allGalleryImages = [...galleryImages, ...uploadedGalleryUrls];
+
       await api.updateProject(id, {
         title: formData.title,
         slug: formData.slug,
@@ -141,6 +180,7 @@ function EditProjectPage() {
         client_name: formData.client_name,
         budget: formData.budget,
         cover_image: coverImageUrl,
+        gallery_images: allGalleryImages,
         featured: formData.featured,
         status: formData.status,
       });
@@ -291,6 +331,55 @@ function EditProjectPage() {
               />
             </div>
             {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
+          </div>
+
+          {/* Gallery Images */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Gallery Images</label>
+            <p className="text-xs text-foreground/60 mb-3">Add additional images to showcase different views of the project.</p>
+            
+            {/* Existing gallery images */}
+            {galleryImages.length > 0 && (
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {galleryImages.map((img, idx) => (
+                  <div key={`existing-${idx}`} className="relative group">
+                    <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                    <button
+                      type="button"
+                      onClick={() => removeExistingGalleryImage(idx)}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* New gallery image previews */}
+            {galleryPreviews.length > 0 && (
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {galleryPreviews.map((preview, idx) => (
+                  <div key={`new-${idx}`} className="relative group">
+                    <img src={preview} alt={`New ${idx + 1}`} className="w-full h-32 object-cover rounded-lg border-2 border-gold/40" />
+                    <button
+                      type="button"
+                      onClick={() => removeNewGalleryImage(idx)}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={12} />
+                    </button>
+                    <div className="absolute bottom-1 left-1 px-1.5 py-0.5 bg-gold/80 text-[10px] text-primary-foreground rounded">New</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <label className="flex items-center gap-3 px-4 py-3 border border-dashed border-border rounded-lg hover:bg-foreground/5 cursor-pointer transition-colors">
+              <Plus size={18} />
+              <span>Add gallery images</span>
+              <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
+            </label>
           </div>
 
           {/* Tall Layout */}

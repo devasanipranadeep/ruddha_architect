@@ -10,7 +10,7 @@ export function AboutPreview() {
           <div className="relative image-zoom w-full">
             <img
               src={IMAGES.about}
-              alt="Inside the Ruddha studio"
+              alt="Inside the Ruddhaa studio"
               loading="lazy"
               width={1280}
               height={1600}
@@ -28,7 +28,7 @@ export function AboutPreview() {
           </Reveal>
           <Reveal delay={200}>
             <p className="mt-8 max-w-xl text-foreground/70 leading-relaxed">
-              A passionate architect and designer based in Kashibugga, Warangal, Telangana. With a B.Arch from Chandigarh University and professional experience across Chandigarh and Hyderabad, Ruddha Architects & Interiors brings a refined design sensibility combined with cutting-edge AI visualization to every project.
+              A passionate architect and designer based in Kashibugga, Warangal, Telangana. With a B.Arch from Chandigarh University and professional experience across Chandigarh and Hyderabad, Ruddhaa Architects & Interiors brings a refined design sensibility combined with cutting-edge AI visualization to every project.
             </p>
           </Reveal>
           <Reveal delay={300}>

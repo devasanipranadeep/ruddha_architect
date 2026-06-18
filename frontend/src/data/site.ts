@@ -8,13 +8,13 @@ import p6 from "@/assets/project-6.jpg";
 import about from "@/assets/about.jpeg";
 
 export const SITE = {
-  name: "Ruddha",
-  full: "Ruddha Architects & Interiors",
+  name: "Ruddhaa",
+  full: "Ruddhaa Architects & Interiors",
   tagline: "Architecture of stillness. Interiors of intent.",
   description:
-    "Ruddha Architects & Interiors crafts cinematic residential, commercial and landscape spaces where light, material and stillness become architecture.",
+    "Ruddhaa Architects & Interiors crafts cinematic residential, commercial and landscape spaces where light, material and stillness become architecture.",
   email: "ruddha.arch@gmail.com",
-  phone: "+91 9966024626",
+  phone: "+91 9490324626",
   address: "Kashibugga, Warangal, Telangana",
   social: { instagram: "#", linkedin: "#", behance: "#" },
 };
@@ -25,8 +25,7 @@ export const NAV = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/services", label: "Services" },
-  { to: "/portfolio", label: "Portfolio" },
-  { to: "/estimator", label: "Estimator" },
+  { to: "/projects", label: "Projects" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -105,7 +104,7 @@ export const PROCESS = [
 
 export const TESTIMONIALS = [
   {
-    quote: "Ruddha didn't design a house. They designed how we wake up, how light enters, how we host. Architecture as a quiet, daily ritual."
+    quote: "Ruddhaa didn't design a house. They designed how we wake up, how light enters, how we host. Architecture as a quiet, daily ritual."
   },
   {
     quote: "Every detail considered, every promise kept. Eighteen months on site without a single argument — a rare kind of partnership."

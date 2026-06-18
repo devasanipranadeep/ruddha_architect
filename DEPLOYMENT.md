@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide will help you deploy the Ruddha Architects & Interiors website. The frontend uses TanStack Start with SSR, which is designed for Cloudflare Pages.
+This guide will help you deploy the Ruddhaa Architects & Interiors website. The frontend uses TanStack Start with SSR, which is designed for Cloudflare Pages.
 
 ## Prerequisites
 

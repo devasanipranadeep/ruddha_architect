@@ -6,14 +6,16 @@ import { IMAGES, SITE } from "@/data/site";
 export function Hero() {
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Background image */}
+      {/* Background Video */}
       <div className="absolute inset-0">
-        <img
-          src={IMAGES.hero}
-          alt="Cinematic interior of a Ruddha residence"
-          width={1920}
-          height={1080}
+        <video
+          src="/hero-video.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
           className="h-full w-full object-cover object-center"
+          poster={IMAGES.hero}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/40" />
         <div className="absolute inset-0 grid-bg opacity-40" />
@@ -65,11 +67,11 @@ export function Hero() {
           className="mt-12 flex flex-wrap items-center gap-6"
         >
           <Link
-            to="/portfolio"
+            to="/projects"
             className="group relative overflow-hidden border border-gold px-8 py-4 text-[11px] uppercase tracking-wider-2 text-gold"
           >
             <span className="relative z-10 transition-colors duration-500 group-hover:text-primary-foreground">
-              Explore Portfolio
+              Explore Projects
             </span>
             <span className="absolute inset-0 -translate-x-full bg-gold transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0" />
           </Link>
